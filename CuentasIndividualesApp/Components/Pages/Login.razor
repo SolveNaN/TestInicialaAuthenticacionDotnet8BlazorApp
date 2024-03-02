@@ -1,0 +1,32 @@
+﻿@page "/login"
+@using Microsoft.AspNetCore.Components.Authorization
+@inject IJSRuntime JS
+@inject IUsuarioService UsuarioService
+@inject AuthenticationStateProvider AuthStateProv
+<br />
+<br />
+<br />
+<h3>Login</h3>
+
+
+<label>Cuenta</label>
+<input @bind-value=usuario.Cuenta />
+<br />
+<br />
+<label>Clave</label>
+<input @bind-value=usuario.Clave />
+<br />
+<button @onclick=Iniciar>Ingresar</button>
+
+<br />
+<h3>Bienvenido @usuarioRespuesta.Cuenta</h3>
+@code {
+    Usuario usuario = new Usuario();
+    Usuario usuarioRespuesta = new Usuario();
+    async Task Iniciar()
+    {
+        var respuesta = await UsuarioService.IniciarSesion(usuario);
+        await JS.InvokeVoidAsync("localStorage.setItem", "Token", respuesta);
+        await AuthStateProv.GetAuthenticationStateAsync();
+    }
+}
